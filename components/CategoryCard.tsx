@@ -1,32 +1,28 @@
-"use client";
+"use client"
 
-import Link from "next/link";
+import Link from "next/link"
 
 interface Category {
-  id: string;
-  text: string;
+  id: string
+  text: string
 }
 
 interface Props {
-  category: Category;
+  category: Category
 }
 
 export default function CategoryCard({ category }: Props) {
   return (
     <Link
       href={{
-        pathname: "/quiz",
-        query: { category: category.id },
+        pathname: `/quiz/${category.id}`,
       }}
     >
-      <div
-        className="flex items-center justify-center border-2 border-gray-200 rounded-lg hover:shadow-lg h-full"
-        key={category.id}
-      >
-        <div className="text-center title-font font-medium text-xl text-gray-900 m-12">
+      <div className="flex items-center justify-center bg-white ring-1 ring-gray-200 rounded-lg shadow-sm hover:shadow-lg h-full">
+        <div className="text-center font-semibold text-xl text-gray-900 m-12">
           {category.text}
         </div>
       </div>
     </Link>
-  );
+  )
 }
