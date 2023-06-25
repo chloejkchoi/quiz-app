@@ -9,3 +9,14 @@ export const CATEGORIES = [
   { id: "science", text: "Science" },
   { id: "food_and_drink", text: "Food and Drinks" },
 ]
+
+export const getCategoryText = (id: string): string => {
+  let categoryText: string = ""
+  CATEGORIES.forEach((value): void => {
+    if (id == value.id) {
+      categoryText = value.text
+      return
+    }
+  })
+  return categoryText
+}

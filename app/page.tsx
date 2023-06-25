@@ -1,5 +1,5 @@
 import CategoryCard from "@/components/CategoryCard"
-import { CATEGORIES } from "./data"
+import { CATEGORIES } from "./categories"
 
 export default function Home() {
   return (

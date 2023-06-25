@@ -3,45 +3,57 @@
 import { IAnswer, IQuestion } from "@/app/interfaces"
 import Question from "./Question"
 import { useState } from "react"
+import { getCategoryText } from "@/app/categories"
 
 interface Props {
+  categoryId: string
   questions: IQuestion[]
 }
 
-export default function Quiz({ questions }: Props) {
+export default function Quiz({ categoryId, questions }: Props) {
   const [curIdx, setCurIdx] = useState<number>(0)
   const [selectedAnswers, setSelectedAnswers] = useState<IAnswer[]>(
-    Array<IAnswer>(questions.length)
+    Array<IAnswer>(questions.length).fill({
+      answerString: "",
+      isCorrect: false,
+    })
   )
 
+  const correctCounter = (): number => {
+    let count: number = 0
+    selectedAnswers.forEach((answer: IAnswer): void => {
+      if (answer.isCorrect) count++
+    })
+    return count
+  }
+
   const onAnswerSelected = (
-    questionIdx: number,
     selectedAnswer: string,
     isCorrect: boolean
   ): void => {
-    const newAnswers = selectedAnswers.map(
-      (answer: IAnswer, index: number): IAnswer => {
-        if (index === questionIdx) {
-          return { answerString: selectedAnswer, isCorrect: isCorrect }
-        } else {
-          return answer
-        }
-      }
-    )
+    const newAnswers = [...selectedAnswers]
+    newAnswers[curIdx] = { answerString: selectedAnswer, isCorrect: isCorrect }
+    console.log(newAnswers)
     setSelectedAnswers(newAnswers)
   }
 
-  const navigate = (questionIdx: number): void => {
-    if (questionIdx >= 0 && questionIdx < questions.length) {
-      setCurIdx(questionIdx)
-    } else if (questionIdx < 0) {
-      // go back to home page
-    } else {
-      // go to results page
+  const goNext = (): void => {
+    if (curIdx >= questions.length - 1) {
+      // show results
     }
+    setCurIdx(curIdx + 1)
+    console.log(curIdx)
   }
 
-  // Progress bar
-  // Ability to move to any question
-  return <Question question={questions[curIdx]} />
+  return (
+    <div>
+      <div>{getCategoryText(categoryId)}</div>
+      <div>{`Score: ${correctCounter()}/${questions.length}`}</div>
+      <Question
+        question={questions[curIdx]}
+        onAnswerSelected={onAnswerSelected}
+        goNext={goNext}
+      />
+    </div>
+  )
 }

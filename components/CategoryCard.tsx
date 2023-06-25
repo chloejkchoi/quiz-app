@@ -2,13 +2,11 @@
 
 import Link from "next/link"
 
-interface Category {
-  id: string
-  text: string
-}
-
 interface Props {
-  category: Category
+  category: {
+    id: string
+    text: string
+  }
 }
 
 export default function CategoryCard({ category }: Props) {
