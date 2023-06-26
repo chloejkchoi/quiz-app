@@ -1,7 +1,7 @@
 "use client"
 
-import { IQuestion } from "@/app/interfaces"
-import { useState } from "react"
+import { IAnswer, IQuestion } from "@/app/interfaces"
+import { useMemo, useState } from "react"
 
 interface Props {
   question: IQuestion
@@ -15,40 +15,78 @@ export default function Question({
   goNext,
 }: Props) {
   const [showResult, setShowResult] = useState<boolean>(false)
+  const [selectedIdx, setSelectedIdx] = useState<number>()
+  const answers = useMemo(() => {
+    let combinedAnswers: IAnswer[] = question.incorrectAnswers.map(
+      (value: string): IAnswer => {
+        return { answerString: value, isCorrect: false }
+      }
+    )
+    combinedAnswers.splice(
+      Math.floor(Math.random() * combinedAnswers.length),
+      0,
+      {
+        answerString: question.correctAnswer,
+        isCorrect: true,
+      }
+    )
+    return combinedAnswers
+  }, [question])
+
+  const onAnswerClick = (idx: number): void => {
+    setShowResult(true)
+    setSelectedIdx(idx)
+  }
+
+  var classNames = require("classnames")
 
   return (
-    <div>
-      <div>{question.question.text}</div>
-      <br />
-      <div className="flex flex-col gap-4">
-        <button
-          onClick={() => {
-            onAnswerSelected(question.correctAnswer, true)
-            setShowResult(true)
-          }}
-        >
-          {question.correctAnswer}
-        </button>
-        {question.incorrectAnswers.map((value: string) => (
-          <button
-            onClick={() => {
-              onAnswerSelected(value, false)
-              setShowResult(true)
-            }}
-          >
-            {value}
-          </button>
-        ))}
+    <div className="flex flex-col gap-8">
+      <div className="px-6 text-center font-medium text-2xl text-gray-900">
+        {question.question.text}
+      </div>
+      <div className="grid grid-cols-2 gap-6">
+        {answers.map((answer: IAnswer, index: number) => {
+          const answerClassName = classNames(
+            "rounded-lg p-4 h-full ring text-xl",
+            {
+              "bg-white ring-gray-400 font-medium text-gray-900 hover:ring-gray-500 hover:font-bold":
+                !showResult,
+              "ring-gray-400 text-gray-500 bg-gray-200":
+                showResult && index != selectedIdx && !answer.isCorrect,
+              "ring-red-700 text-gray-500 bg-gray-200":
+                showResult && index == selectedIdx && !answer.isCorrect,
+              "ring-green-700 text-gray-900 font-bold":
+                showResult && answer.isCorrect,
+            }
+          )
+          return (
+            <button
+              key={index}
+              className={answerClassName}
+              disabled={showResult}
+              onClick={() => {
+                onAnswerSelected(answer.answerString, answer.isCorrect)
+                onAnswerClick(index)
+              }}
+            >
+              {answer.answerString}
+            </button>
+          )
+        })}
       </div>
       {showResult && (
-        <button
-          onClick={() => {
-            setShowResult(false)
-            goNext()
-          }}
-        >
-          next
-        </button>
+        <div className="flex flex-col w-full items-center">
+          <button
+            className="rounded-lg py-4 px-8 w-fit ring ring-sky-800 bg-sky-700 hover:ring-sky-900 hover:bg-sky-800"
+            onClick={() => {
+              setShowResult(false)
+              goNext()
+            }}
+          >
+            <p className="text-xl font-medium text-white">Next</p>
+          </button>
+        </div>
       )}
     </div>
   )

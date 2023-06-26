@@ -33,27 +33,33 @@ export default function Quiz({ categoryId, questions }: Props) {
   ): void => {
     const newAnswers = [...selectedAnswers]
     newAnswers[curIdx] = { answerString: selectedAnswer, isCorrect: isCorrect }
-    console.log(newAnswers)
     setSelectedAnswers(newAnswers)
   }
 
   const goNext = (): void => {
-    if (curIdx >= questions.length - 1) {
-      // show results
-    }
     setCurIdx(curIdx + 1)
-    console.log(curIdx)
   }
 
   return (
-    <div>
-      <div>{getCategoryText(categoryId)}</div>
-      <div>{`Score: ${correctCounter()}/${questions.length}`}</div>
-      <Question
-        question={questions[curIdx]}
-        onAnswerSelected={onAnswerSelected}
-        goNext={goNext}
-      />
+    <div className="flex flex-col max-w-xl gap-10">
+      <div className="grid grid-cols-3 items-center w-full text-lg">
+        <div className="font-medium text-gray-600">
+          {getCategoryText(categoryId)}
+        </div>
+        <div className="font-bold text-center">{`${curIdx + 1} of ${
+          questions.length
+        }`}</div>
+        <div className="text-end text-gray-600">{`Score: ${correctCounter()}`}</div>
+      </div>
+      {curIdx < questions.length ? (
+        <Question
+          question={questions[curIdx]}
+          onAnswerSelected={onAnswerSelected}
+          goNext={goNext}
+        />
+      ) : (
+        <div>Finished</div>
+      )}
     </div>
   )
 }

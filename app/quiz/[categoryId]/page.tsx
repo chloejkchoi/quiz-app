@@ -26,7 +26,7 @@ async function QuizPage({ params }: { params: { categoryId: string } }) {
 
   return (
     <main>
-      <div className="flex flex-col items-center container p-16 mx-auto">
+      <div className="flex flex-col items-center container p-16 mx-auto text-gray-600">
         <Quiz categoryId={params.categoryId} questions={resJSON} />
       </div>
     </main>
