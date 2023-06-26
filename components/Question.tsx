@@ -23,7 +23,7 @@ export default function Question({
       }
     )
     combinedAnswers.splice(
-      Math.floor(Math.random() * combinedAnswers.length),
+      Math.floor(Math.random() * (combinedAnswers.length + 1)),
       0,
       {
         answerString: question.correctAnswer,
@@ -41,20 +41,20 @@ export default function Question({
   var classNames = require("classnames")
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-10">
       <div className="px-6 text-center font-medium text-2xl text-gray-900">
         {question.question.text}
       </div>
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-2 gap-6 mb-6">
         {answers.map((answer: IAnswer, index: number) => {
           const answerClassName = classNames(
-            "rounded-lg p-4 h-full ring text-xl",
+            "rounded-lg px-6 py-4 h-full ring text-xl",
             {
-              "bg-white ring-gray-400 font-medium text-gray-900 hover:ring-gray-500 hover:font-bold":
+              "bg-white ring-gray-500 font-bold text-gray-900 hover:ring-gray-700 hover:bg-gray-100":
                 !showResult,
-              "ring-gray-400 text-gray-500 bg-gray-200":
+              "ring-gray-400 text-gray-400 bg-gray-200":
                 showResult && index != selectedIdx && !answer.isCorrect,
-              "ring-red-700 text-gray-500 bg-gray-200":
+              "ring-red-700 text-gray-400 bg-gray-200":
                 showResult && index == selectedIdx && !answer.isCorrect,
               "ring-green-700 text-gray-900 font-bold":
                 showResult && answer.isCorrect,
